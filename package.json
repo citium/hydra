@@ -4,7 +4,7 @@
   "description": "Fast responsive development boilerplate for webpack/graphql/react",
   "main": "index.js",
   "scripts": {
-    "start":"node tools/webpack.js",
+    "start": "node tools/webpack.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Cong Do",

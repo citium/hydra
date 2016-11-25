@@ -14,9 +14,10 @@ module.exports = merge(base_config, {
   entry: {
     "server": ["./src/server/main.js"]
   },
-  externals: [nodeExternals({
-    whitelist: /(webpack)/
-  })],
+  externals: [
+    nodeExternals({
+      whitelist: /(webpack)/
+    })],
   output: {
     path: path.resolve(__dirname, "..", "..", 'build', "server"),
     filename: "bundle.js"

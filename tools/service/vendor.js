@@ -112,6 +112,7 @@ function restart() {
 
 function build() {
   if (compiler) {
+    log('COMPING....');
     compiler.run(client.notified)
   }
 }

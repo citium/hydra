@@ -12,7 +12,7 @@ var log = titleLog("Webpack")
 client.start()
 server.start()
 vendor.start()
-// vendor.build()
+vendor.build()
 
 var {PORT, PUBLIC_DIR, BUILD_DIR} = require("./config")
 
@@ -30,11 +30,11 @@ app.listen(PORT, () => {
 
 app.use((...args) => client.webpackDev(...args))
 app.use((...args) => client.webpackHot(...args))
-app.use(api.router)
 app.use("/vendor_bundle.js", (req, res) => {
   res.sendFile(path.join(BUILD_DIR, 'vendor_bundle.js'))
 })
 app.use("/", express.static(PUBLIC_DIR))
+app.use(api.router)
 app.use((req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, 'index.html'))
 })

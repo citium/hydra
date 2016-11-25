@@ -3,7 +3,7 @@ import { graphql, compose, withApollo } from 'react-apollo'
 import ApolloClient from 'apollo-client'
 import gql from 'graphql-tag'
 import update from 'react-addons-update'
-import { Row, Button } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 
 
 const SUBSCRIPTION_QUERY = gql`
@@ -63,13 +63,13 @@ class Counter extends React.Component {
     const {loading, count, addCount} = this.props;
     if (loading) {
       return (
-        <Row className="text-center">
+        <div>
             Loading...
-          </Row>
+          </div>
         );
     } else {
       return (
-        <Row className="text-center">
+        <div>
             <div>
               {count.amount}
             </div>
@@ -80,7 +80,7 @@ class Counter extends React.Component {
             <Button bsStyle="primary" onClick={addCount(-1)}>
               ---
             </Button>
-          </Row>
+          </div>
         );
     }
   }

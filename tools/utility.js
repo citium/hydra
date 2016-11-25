@@ -1,4 +1,5 @@
 var chalk = require("chalk")
+var stringifyObject = require("stringify-object")
 
 var maxLength = 0;
 var systemIndex = 0;
@@ -71,8 +72,17 @@ function getStats(statsResult) {
   return error ? stats : error
 }
 
+function pretty(obj) {
+  return stringifyObject(obj, {
+    indent: '  ',
+    singleQuotes: false,
+    inlineCharacterLimit: 80
+  })
+}
+
 module.exports = {
   titleLog,
   reporter,
-  getStats
+  getStats,
+  pretty
 }

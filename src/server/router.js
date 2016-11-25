@@ -2,7 +2,9 @@ import proxy from 'http-proxy-middleware'
 import express from 'express'
 import path from "path"
 
-const PUBLIC_DIR = path.resolve(__dirname, "../../build")
+const PUBLIC_DIR = path.resolve(__dirname, "../../public")
+const BUILD_DIR = path.resolve(__dirname, "../../build")
+
 
 let mongo = __DEV__ ? require("./middleware/mongo").default : undefined
 let killswitch = __DEV__ ? require("./middleware/killswitch").default : undefined
@@ -31,6 +33,9 @@ if (__DEV__) {
   router.use("/client_bundle.js", proxy('/client_bundle.js', {
     target: 'http://localhost:3000'
   }))
+  router.use("/vendor_bundle.js", (req, res) => {
+    res.sendFile(path.join(BUILD_DIR, 'vendor_bundle.js'))
+  })
   router.use("/*hot-update.*", proxy({
     target: 'http://localhost:3000'
   }))

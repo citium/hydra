@@ -14,6 +14,9 @@ class Html extends React.Component {
           <meta name="viewport" content="width=device-width, initial-scale=1"/>
           <title>OMG</title>
           <link rel="shortcut icon" href="/favicon.ico"/>
+          <script src="/js/react.js" charSet="utf-8"></script>
+          <script src="/js/react-dom.js" charSet="utf-8"></script>
+          <script src="/js/react-bootstrap.js" charSet="utf-8"></script>
         </head>
         <body>
           <div id="root" dangerouslySetInnerHTML={{

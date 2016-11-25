@@ -10,6 +10,11 @@ module.exports = merge(base_config, {
     filename: "client_bundle.js",
     library: 'app',
   },
+  externals: {
+    "react-bootstrap": "ReactBootstrap",
+    "react": "React",
+    "react-dom": "ReactDOM",
+  },
   plugins: [
     new webpack.DefinePlugin(Object.assign({
       __CLIENT__: true,

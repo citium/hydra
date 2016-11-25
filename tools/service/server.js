@@ -2,15 +2,18 @@ var webpack = require('webpack')
 var merge = require('webpack-merge');
 var _ = require("lodash")
 
-var {watchOptions} = require("../config")
+var {watchOptions, BUILD_DIR} = require("../config")
 var {reporter, titleLog, getStats} = require("../utility")
 var client = require("./client")
 var webpackConfig = require("../../config/webpack/server.js")
 var api = require("./api")
+var fs = require("fs")
+var path = require("path")
 
 var log = titleLog("Server")
 var compiler
 var watcher
+var assets = []
 
 function stop() {
   if (watcher) {
@@ -18,9 +21,24 @@ function stop() {
   }
 }
 
-function start() {
-  stop()
+function cleanUpOldAssets(stats) {
+  assets = stats.assets
+    .map(asset => asset.name)
+  fs.readdir(path.join(BUILD_DIR, "server"), (err, items) => {
+    items.filter(item => item.indexOf("hot-update") != -1)
+    items.forEach(item => {
+      if (assets.indexOf(item) === -1) {
+        fs.unlink(path.join(BUILD_DIR, "server", item), (err) => {
+          if (err) {
+            log("Error deleting", err)
+          }
+        })
+      }
+    })
+  })
+}
 
+function getConfig() {
   var config = merge(webpackConfig, {
     debug: true,
     entry: {
@@ -31,12 +49,19 @@ function start() {
       new webpack.NoErrorsPlugin()
     ]
   })
+  return config;
+}
 
+function start() {
+  stop()
+  var config = getConfig()
   compiler = webpack(config)
   compiler.plugin('done', reporter(log))
   compiler.plugin('done', (statsResult) => {
-    if (getStats(statsResult)) {
+    let stats = getStats(statsResult)
+    if (stats) {
       api.restart()
+      cleanUpOldAssets(stats)
     }
   })
 
