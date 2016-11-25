@@ -1,0 +1,23 @@
+
+type Count {
+  amount: Int!
+}
+
+type Query {
+  # Counter
+  count: Count
+}
+
+type Mutation {
+  addCount( amount: Int! ): Count
+}
+
+type Subscription {
+  countUpdated(ids: String): Count
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
