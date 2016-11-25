@@ -14,7 +14,7 @@ server.start()
 vendor.start()
 // vendor.build()
 
-var {PORT, PUBLIC_DIR} = require("./config")
+var {PORT, PUBLIC_DIR, BUILD_DIR} = require("./config")
 
 const app = express()
 app.listen(PORT, () => {
@@ -28,14 +28,13 @@ app.listen(PORT, () => {
   }
 })
 
-
-const publicDirector = express.static(PUBLIC_DIR)
-function defaultRoute(req, res) {
-  res.sendFile(path.join(PUBLIC_DIR, 'index.html'))
-}
-
 app.use((...args) => client.webpackDev(...args))
 app.use((...args) => client.webpackHot(...args))
 app.use(api.router)
-app.use("/", publicDirector)
-app.use(defaultRoute)
+app.use("/vendor_bundle.js", (req, res) => {
+  res.sendFile(path.join(BUILD_DIR, 'vendor_bundle.js'))
+})
+app.use("/", express.static(PUBLIC_DIR))
+app.use((req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'index.html'))
+})

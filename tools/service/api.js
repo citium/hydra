@@ -20,7 +20,7 @@ var infinityData = {
   limit: 10,
   duration: 5 * 1000
 }
-var apiPath = path.join(BUILD_DIR, "server", "bundle.js");
+var hotApiPath = path.join(BUILD_DIR, "server", "bundle.js");
 
 function setupRouter() {
   var router = express()
@@ -102,7 +102,7 @@ function start() {
   if (stop()) {
     if (checkInfinity()) {
       log('HotApi: Starting')
-      server = spawn('node', [apiPath], getEnviroment())
+      server = spawn('node', [hotApiPath], getEnviroment())
       server.stdout.on('data', bufferLog)
       server.stderr.on('data', bufferLog)
       server.on('exit', exitCondition)
