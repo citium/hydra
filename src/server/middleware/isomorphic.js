@@ -8,8 +8,10 @@ import routes from 'share/route'
 import createApolloClient from "share/createApolloClient"
 import Html from 'share/components/html'
 
-const port = process.env.PORT || 3001
-const apiUrl = `http://localhost:${port}/graphql`
+
+import { SERVER_PORT } from "config"
+
+const apiUrl = `http://localhost:${SERVER_PORT}/graphql`
 
 export default function isomorphic(req, res) {
   match({

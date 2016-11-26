@@ -64,23 +64,24 @@ class Counter extends React.Component {
     if (loading) {
       return (
         <div>
-            Loading...
+            Still Loading...
           </div>
         );
     } else {
       return (
         <div>
-            <div>
-              {count.amount}
-            </div>
-            <br />
-            <Button bsStyle="primary" onClick={addCount(1)}>
-              +++
-            </Button>
-            <Button bsStyle="primary" onClick={addCount(-1)}>
-              ---
-            </Button>
+          <div>
+            {count.amount}
           </div>
+          <br />
+          <Button bsStyle="primary" onClick={addCount(1)}>
+            +
+          </Button>
+          -
+          <Button bsStyle="primary" onClick={addCount(-1)}>
+            -
+          </Button>
+        </div>
         );
     }
   }

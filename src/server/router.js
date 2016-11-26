@@ -1,9 +1,7 @@
-import proxy from 'http-proxy-middleware'
 import express from 'express'
-import path from "path"
+import { PUBLIC_DIR } from "config"
 
-const PUBLIC_DIR = path.resolve(__dirname, "../../public")
-const BUILD_DIR = path.resolve(__dirname, "../../build")
+var httpProxy = require('http-proxy');
 
 
 let mongo = __DEV__ ? require("./middleware/mongo").default : undefined
@@ -12,33 +10,38 @@ let graphiql = __DEV__ ? require("./middleware/graphiql").default : undefined
 let graphql = require("./middleware/graphql").default
 let isomorphic = require("./middleware/isomorphic").default
 
-//Silence the proxy log
-proxy({
-  target: 'http://localhost',
-  logLevel: 'silent'
-})
 
 const router = express()
 
 router.use("/graphql", (...arg) => graphql(...arg))
-router.use("/", express.static(PUBLIC_DIR))
+
 
 if (__DEV__) {
   router.use("/ERROR_ADDRESS_IN_USE", (...arg) => killswitch(...arg))
   router.use("/mongo", (...arg) => mongo(...arg))
   router.use("/graphiql", (...arg) => graphiql(...arg))
-  router.use("/__webpack_hmr", proxy({
-    target: 'http://localhost:3000'
-  }))
-  router.use("/client_bundle.js", proxy('/client_bundle.js', {
-    target: 'http://localhost:3000'
-  }))
-  router.use("/vendor_bundle.js", (req, res) => {
-    res.sendFile(path.join(BUILD_DIR, 'vendor_bundle.js'))
+
+  var hp = new httpProxy.createProxyServer({
+    target: "http://127.0.0.1:3001",
+    ws: true,
+  });
+
+  router.use("/__webpack_hmr", (req, res) => {
+    req.url = "/__webpack_hmr" + req.url.substr(1)
+
+    hp.web(req, res)
   })
-  router.use("/*hot-update.*", proxy({
-    target: 'http://localhost:3000'
-  }))
+
+  router.on('upgrade', function(req, socket, head) {
+    hp.ws(req, socket, head);
+  });
+
+  router.use("/", express.static(PUBLIC_DIR))
+
+// router.use("/js", (req, res) => {
+//   req.url = "/js" + req.url
+//   hp.web(req, res)
+// })
 }
 
 router.use((...arg) => isomorphic(...arg))

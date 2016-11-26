@@ -15,7 +15,7 @@ if (module.hot) {
   module.hot.status(event => {
     // if (event === 'abort' || event === 'fail') {
     // }
-    console.log(event);
+    // console.log(event);
   });
 
   module.hot.accept('./main', () => {

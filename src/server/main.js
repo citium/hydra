@@ -3,7 +3,7 @@ Goal
   keep this file minimal
   Socket always listening
 **/
-import { PORT, DEV_RESTART_CODE } from "share/config"
+import { SERVER_PORT, DEV_RESTART_CODE } from "config"
 import express from "express"
 import bodyParser from 'body-parser'
 import { SubscriptionServer } from 'subscriptions-transport-ws'
@@ -25,8 +25,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use((...args) => router(...args))
 
-let server = app.listen(PORT, () => {
-  console.log(`Listening on ${PORT}`)
+let server = app.listen(SERVER_PORT, () => {
+  console.log(`Listening on ${SERVER_PORT}`)
 }).on('error', handleServerError)
 
 new SubscriptionServer({

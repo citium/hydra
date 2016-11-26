@@ -2,10 +2,10 @@ var webpack = require('webpack')
 var merge = require('webpack-merge');
 var _ = require("lodash")
 
-var {watchOptions, BUILD_DIR} = require("../config")
+var {BUILD_DIR} = require("../../src/config")
 var {reporter, titleLog, getStats} = require("../utility")
 var client = require("./client")
-var webpackConfig = require("../../config/webpack/server.js")
+var webpackConfig = require("../../webpack/server.js")
 var api = require("./api")
 var fs = require("fs")
 var path = require("path")
@@ -24,15 +24,11 @@ function stop() {
 function cleanUpOldAssets(stats) {
   assets = stats.assets
     .map(asset => asset.name)
-  fs.readdir(path.join(BUILD_DIR, "server"), (err, items) => {
-    items.filter(item => item.indexOf("hot-update") != -1)
+  fs.readdir(path.join(BUILD_DIR), (err, items) => {
+    items = items.filter(item => item.indexOf("hot-update") != -1)
     items.forEach(item => {
       if (assets.indexOf(item) === -1) {
-        fs.unlink(path.join(BUILD_DIR, "server", item), (err) => {
-          if (err) {
-            log("Error deleting", err)
-          }
-        })
+        fs.unlinkSync(path.join(BUILD_DIR, item))
       }
     })
   })
@@ -65,7 +61,10 @@ function start() {
     }
   })
 
-  watcher = compiler.watch(watchOptions, client.notified)
+  watcher = compiler.watch({
+    aggregateTimeout: 10,
+    poll: 10
+  }, client.notified)
   _.merge(module.exports, {
     compiler,
     watcher

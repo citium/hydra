@@ -1,8 +1,8 @@
 import React from "react"
-import { Navbar, Nav, MenuItem, NavDropdown } from "react-bootstrap"
+import { Navbar, Nav, MenuItem, NavItem, NavDropdown, Panel } from "react-bootstrap"
 import go from "share/go"
 
-class App extends React.Component {
+class AdminLayout extends React.Component {
   static propTypes = {
     children: React.PropTypes.element
   }
@@ -12,13 +12,14 @@ class App extends React.Component {
       <Navbar>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="#">The Almight Counter</a>
+            <a href="#">Admins</a>
           </Navbar.Brand>
         </Navbar.Header>
         <Nav>
-          <NavDropdown eventKey={3} title="Admin" id="basic-nav-dropdown">
-            <MenuItem onClick={go("/admin")} eventKey={3.0}>Admin</MenuItem>
-            <MenuItem divider />
+          <NavItem eventKey={2.1} onClick={go("/admin/author")}>Author</NavItem>
+          <NavItem eventKey={2.2} onClick={go("/admin/book")}>Book</NavItem>
+          <NavItem eventKey={2.3} onClick={go("/admin/volume")}>Volume</NavItem>
+          <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
             <MenuItem onClick={go("/admin/author")} eventKey={3.1}>Author</MenuItem>
             <MenuItem onClick={go("/admin/book")} eventKey={3.2}>Book</MenuItem>
             <MenuItem onClick={go("/admin/volume")} eventKey={3.3}>Volume</MenuItem>
@@ -34,4 +35,4 @@ class App extends React.Component {
   }
 }
 
-export default App
+export default AdminLayout

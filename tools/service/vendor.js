@@ -1,18 +1,16 @@
 var webpack = require('webpack')
 var fs = require("fs")
 var _ = require("lodash")
-var path = require("path")
 var client = require("./client")
-var {ROOT_DIR} = require("../config")
+var {ROOT_DIR, VENDOR_ENTRY_PATH} = require("../../src/config")
 var {titleLog, getStats} = require("../utility")
 // var {reporter} = require("../utility")
-var webpackConfig = require("../../config/webpack/vendor.js");
+var webpackConfig = require("../../webpack/vendor.js");
 
 var log = titleLog("Vendor")
 var compiler
 var compileGuard = ""
-var vendorFile = path.join(ROOT_DIR, 'config', 'vendor.js')
-
+var vendorFile = VENDOR_ENTRY_PATH
 
 function updateExternalModule(data) {
   try {
@@ -54,7 +52,8 @@ function extractExternalModule(stats) {
     } else {
       name = module.name.split(" ")[1]
     }
-    return `require(".${name}")`
+    name = name.split("node_modules/")[1]
+    return `require("${name}")`
   }
 }
 
@@ -112,7 +111,6 @@ function restart() {
 
 function build() {
   if (compiler) {
-    log('COMPING....');
     compiler.run(client.notified)
   }
 }

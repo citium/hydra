@@ -2,8 +2,7 @@ var {spawn} = require('child_process')
 var path = require("path")
 var {titleLog} = require("../utility")
 var _ = require("lodash")
-var {BUILD_DIR, API_PORT} = require("../config")
-var express = require("express")
+var {BUILD_DIR, API_PORT, SERVER_BUNDLE_PATH} = require("../../src/config")
 var proxy = require('http-proxy-middleware')
 
 var log = titleLog("RunApi")
@@ -20,32 +19,6 @@ var infinityData = {
   limit: 10,
   duration: 5 * 1000
 }
-var hotApiPath = path.join(BUILD_DIR, "server", "bundle.js");
-
-function setupRouter() {
-  var router = express()
-  router.use("/ERROR_ADDRESS_IN_USE", proxy('/ERROR_ADDRESS_IN_USE', {
-    target: 'http://localhost:3001',
-  }))
-  router.use("/mongos", proxy('/mongos', {
-    target: 'http://localhost:3001'
-  }))
-  router.use("/graphql", proxy('/graphql', {
-    target: 'http://localhost:3001'
-  }))
-  router.use("/graphiql", proxy('/graphiql', {
-    target: 'http://localhost:3001'
-  }))
-
-  var wsProxy = proxy(`ws://localhost:${API_PORT}`, {
-    changeOrigin: true
-  });
-
-  router.use(wsProxy);
-  router.on("upgrade", wsProxy.upgrade)
-  return router
-}
-var router = setupRouter();
 
 function checkInfinity() {
   let {counter, limit, duration} = infinityData
@@ -102,7 +75,7 @@ function start() {
   if (stop()) {
     if (checkInfinity()) {
       log('HotApi: Starting')
-      server = spawn('node', [hotApiPath], getEnviroment())
+      server = spawn('node', [SERVER_BUNDLE_PATH], getEnviroment())
       server.stdout.on('data', bufferLog)
       server.stderr.on('data', bufferLog)
       server.on('exit', exitCondition)
@@ -123,5 +96,4 @@ module.exports = {
   start,
   stop,
   restart,
-  router
 }

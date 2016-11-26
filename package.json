@@ -42,6 +42,7 @@
     "body-parser": "^1.15.2",
     "express-graphql": "^0.6.1",
     "express-http-proxy": "^0.10.1",
+    "express-request-proxy": "^2.0.0",
     "graphql": "^0.8.2",
     "graphql-subscriptions": "^0.2.1",
     "graphql-tools": "^0.8.1",
