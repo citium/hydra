@@ -5,14 +5,33 @@ import gql from 'graphql-tag'
 import update from 'react-addons-update'
 import { Button } from 'react-bootstrap'
 
-
-const SUBSCRIPTION_QUERY = gql`
+//#region graphql
+const COUNT_UPDATE_SUBSCRIPTION = gql`
   subscription onCountUpdated {
     countUpdated {
       amount
     }
   }
 `;
+
+const GET_COUNT_QUERY = gql `
+  query getCount {
+    count {
+      amount
+    }
+  }
+`;
+
+const ADD_COUNT_MUTATION = gql `
+  mutation addCount(
+    $amount: Int!
+  ) {
+    addCount(amount: $amount) {
+      amount
+    }
+  }
+`;
+//#endregion
 
 class Counter extends React.Component {
   static propTypes = {
@@ -38,7 +57,7 @@ class Counter extends React.Component {
   subscribe() {
     const {client, updateCountQuery} = this.props;
     this.subscriptionObserver = client.subscribe({
-      query: SUBSCRIPTION_QUERY,
+      query: COUNT_UPDATE_SUBSCRIPTION,
       variables: {},
     }).subscribe({
       next(data) {
@@ -61,51 +80,27 @@ class Counter extends React.Component {
 
   render() {
     const {loading, count, addCount} = this.props;
+    if (count.amount < 0) {
+      throw new Error('OMG its negative');
+    }
     if (loading) {
-      return (
-        <div>
-            Still Loading...
-          </div>
-        );
+      return <div> Still Loading... </div>
     } else {
       return (
         <div>
-          <div>
-            {count.amount}
-          </div>
+          <div> {count.amount} </div>
           <br />
-          <Button bsStyle="primary" onClick={addCount(1)}>
-            +
-          </Button>
+          <Button bsStyle="primary" onClick={addCount(1)}> + </Button>
           -
-          <Button bsStyle="primary" onClick={addCount(-1)}>
-            -
-          </Button>
+          <Button bsStyle="primary" onClick={addCount(-1)}> - </Button>
         </div>
         );
     }
   }
 }
 
-const AMOUNT_QUERY = gql `
-  query getCount {
-    count {
-      amount
-    }
-  }
-`;
-
-const ADD_COUNT_MUTATION = gql `
-  mutation addCount(
-    $amount: Int!
-  ) {
-    addCount(amount: $amount) {
-      amount
-    }
-  }
-`;
-
-export default withApollo(compose(graphql(AMOUNT_QUERY, {
+//#region export
+export default withApollo(compose(graphql(GET_COUNT_QUERY, {
   props({data}) {
     const {loading, count, updateQuery} = data
     return {
@@ -143,3 +138,4 @@ export default withApollo(compose(graphql(AMOUNT_QUERY, {
     }
   })
 }))(Counter));
+//#endregion

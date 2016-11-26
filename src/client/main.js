@@ -3,27 +3,26 @@ import { render } from 'react-dom'
 
 var App = require('./app').default
 
-var reloadCount = 0;
 const root = document.getElementById('root')
 
+render((<App/>), root);
 
-render((<App key={reloadCount++}/>), root);
+//#region error logging
+// TODO LOG ERRROR
+// window.onerror = function(err) {
+// };
+//#endregion
 
+//#region Hot Module Replace
 if (module.hot) {
   module.hot.accept();
-
-  module.hot.status(event => {
-    // if (event === 'abort' || event === 'fail') {
-    // }
-    // console.log(event);
-  });
-
-  module.hot.accept('./main', () => {
+  module.hot.accept('./app', () => {
     try {
       App = require('./app').default;
-      render((<App key={reloadCount++}/>), root);
+      render((<App/>), root);
     } catch (err) {
       console.log(err.stack);
     }
   });
 }
+//#endregion

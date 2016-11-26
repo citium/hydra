@@ -4,14 +4,12 @@ var fs = require("fs")
 var _ = require("lodash")
 var {PUBLIC_DIR, VENDOR_MANIFEST_PATH} = require("../../src/config")
 var webpackConfig = require("../../webpack/client.js")
-var {reporter, titleLog, getStats} = require("../utility")
-var path = require("path")
+var {reporter, titleLog} = require("../utility")
 
 var log = titleLog("Client")
 var compiler
 var webpackDev
 var webpackHot
-var watcher
 var expressApp
 var config
 
@@ -36,10 +34,6 @@ function stop() {
     webpackDev.close()
     webpackDev = undefined
     webpackHot = undefined
-  }
-  if (watcher) {
-    watcher.close()
-    watcher = undefined
   }
 }
 
@@ -67,33 +61,36 @@ function startExpress() {
   }
 }
 
-function exportAssets(statsResult) {
-  let stats = getStats(statsResult)
-  if (stats) {
-    let assets = stats.assets
-      .map(asset => asset.name)
-
-    assets.forEach(asset => {
-      let location = path.join(config.output.path, asset)
-      webpackDev.fileSystem.readFile(location, (err, data) => {
-        if (!err) {
-          fs.writeFile(location, data, (err) => {
-            if (err) console.log(err)
-          })
-        }
-      })
-    })
-
-    fs.readdir(path.join(config.output.path), (err, items) => {
-      items = items.filter(item => item.indexOf("hot-update") != -1)
-      items.forEach(item => {
-        if (assets.indexOf(item) === -1) {
-          fs.unlinkSync(path.join(config.output.path, item))
-        }
-      })
-    })
-  }
-}
+// var path = require("path")
+// var {getStats} = require("../utility")
+//
+// function exportAssets(statsResult) {
+//   let stats = getStats(statsResult)
+//   if (stats) {
+//     let assets = stats.assets
+//       .map(asset => asset.name)
+//
+//     assets.forEach(asset => {
+//       let location = path.join(config.output.path, asset)
+//       webpackDev.fileSystem.readFile(location, (err, data) => {
+//         if (!err) {
+//           fs.writeFile(location, data, (err) => {
+//             if (err) console.log(err)
+//           })
+//         }
+//       })
+//     })
+//
+//     fs.readdir(path.join(config.output.path), (err, items) => {
+//       items = items.filter(item => item.indexOf("hot-update") != -1)
+//       items.forEach(item => {
+//         if (assets.indexOf(item) === -1) {
+//           fs.unlinkSync(path.join(config.output.path, item))
+//         }
+//       })
+//     })
+//   }
+// }
 
 function useMiddleWare() {
   startExpress()
@@ -116,11 +113,11 @@ function useMiddleWare() {
 
   compiler = webpack(config)
   compiler.plugin('done', reporter(log))
-  compiler.plugin('done', exportAssets)
 
+  // compiler.plugin('done', exportAssets)
   let webpackOption = {
     contentBase: PUBLIC_DIR,
-    publicPath: "/js",
+    publicPath: '/js',
     noInfo: true,
     quite: true,
     log: () => {
@@ -139,57 +136,9 @@ function useMiddleWare() {
   })
 }
 
-function useDevServer() {
-  var dllPlugin
-  var {WEBPACK_PORT} = require("../../src/config")
-
-  try {
-    dllPlugin = new webpack.DllReferencePlugin({
-      context: '.',
-      manifest: JSON.parse(fs.readFileSync(VENDOR_MANIFEST_PATH).toString())
-    })
-  } catch (error) {
-    log(`Fail to load DllReferencePlugin ${VENDOR_MANIFEST_PATH}`)
-  }
-
-  config = merge(webpackConfig, {
-    entry: {
-      app: ["webpack/hot/dev-server", `webpack-dev-server/client?http://localhost:${WEBPACK_PORT}/`]
-    },
-    plugins: [new webpack.HotModuleReplacementPlugin(), new webpack.NoErrorsPlugin(), dllPlugin].filter(n => n)
-  })
-
-  compiler = webpack(config)
-  compiler.plugin('done', reporter(log))
-
-  let webpackOption = {
-    contentBase: PUBLIC_DIR,
-    publicPath: "/js",
-    noInfo: true,
-    quite: true,
-    hot: true,
-    watchOption: {
-      aggregateTimeout: 10,
-      poll: 10
-    },
-    log: () => {
-    },
-  }
-
-  var webpackDevServer = require("webpack-dev-server")
-  watcher = new webpackDevServer(compiler, webpackOption)
-  watcher.listen(WEBPACK_PORT);
-
-  _.assign(module.exports, {
-    compiler,
-    watcher
-  })
-}
-
 function start() {
   stop()
   useMiddleWare()
-// useDevServer()
 }
 
 function restart() {

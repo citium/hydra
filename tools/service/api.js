@@ -1,8 +1,7 @@
 var {spawn} = require('child_process')
-var path = require("path")
 var {titleLog} = require("../utility")
 var _ = require("lodash")
-var {BUILD_DIR, API_PORT, SERVER_BUNDLE_PATH} = require("../../src/config")
+var {API_PORT, SERVER_BUNDLE_PATH} = require("../../src/config")
 var proxy = require('http-proxy-middleware')
 
 var log = titleLog("RunApi")

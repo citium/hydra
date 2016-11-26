@@ -2,6 +2,7 @@ var path = require("path")
 
 const SERVER_PORT = 3000
 const WEBPACK_PORT = 3001
+const HOST = "localhost"
 
 const ROOT_DIR = path.join(__dirname, "..");
 const PUBLIC_DIR = path.join(ROOT_DIR, "public");
@@ -13,6 +14,7 @@ const VENDOR_MANIFEST_PATH = path.join(PUBLIC_DIR, "js", "vendor-manifest.json")
 const SERVER_BUNDLE_PATH = path.join(BUILD_DIR, "server-bundle.js");
 const VENDOR_ENTRY_PATH = path.join(ROOT_DIR, "webpack", "vendor-entry.js");
 
+const GRAPHQL_URL = `http://${HOST}:${SERVER_PORT}/graphql`
 const DEV_SOCKET_CODE = 251
 const DEV_RESTART_CODE = 250
 
@@ -27,5 +29,6 @@ module.exports = {
   VENDOR_MANIFEST_PATH,
   SERVER_BUNDLE_PATH,
   DEV_RESTART_CODE,
-  DEV_SOCKET_CODE
+  DEV_SOCKET_CODE,
+  GRAPHQL_URL
 }
