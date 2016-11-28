@@ -8,9 +8,9 @@ export default class App extends React.Component {
   render() {
     return (
       <ApolloProvider client={apolloClient}>
-        <Router history={browserHistory}>
-          {routes}
-        </Router>
+          <Router history={browserHistory}>
+            {routes}
+          </Router>
       </ApolloProvider>
       );
   }

@@ -80,15 +80,15 @@ class Counter extends React.Component {
 
   render() {
     const {loading, count, addCount} = this.props;
-    if (count.amount < 0) {
-      throw new Error('OMG its negative');
-    }
     if (loading) {
       return <div> Still Loading... </div>
     } else {
+      if (count.amount < 0) {
+        throw new Error('OMG its negative');
+      }
       return (
         <div>
-          <div> {count.amount} </div>
+          <div> Counter {count.amount} </div>
           <br />
           <Button bsStyle="primary" onClick={addCount(1)}> + </Button>
           -

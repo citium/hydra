@@ -3,7 +3,12 @@ import 'isomorphic-fetch'
 
 import schema from '../graphql/schema'
 
-export default apolloExpress(() => ({
-  schema,
-  context: { }
-}))
+export default apolloExpress((req) => {
+  return {
+    schema,
+    context: {
+      req,
+      user: req.user
+    }
+  }
+})

@@ -16,6 +16,7 @@ class AdminLayout extends React.Component {
           </Navbar.Brand>
         </Navbar.Header>
         <Nav>
+          <NavItem eventKey={2.0} onClick={go("/admin/student")}>student</NavItem>
           <NavItem eventKey={2.1} onClick={go("/admin/author")}>Author</NavItem>
           <NavItem eventKey={2.2} onClick={go("/admin/book")}>Book</NavItem>
           <NavItem eventKey={2.3} onClick={go("/admin/volume")}>Volume</NavItem>

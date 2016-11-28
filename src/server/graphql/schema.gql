@@ -1,3 +1,137 @@
+enum Day {
+  SUNDAY,
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY,
+  SATURDAY
+}
+
+interface Record {
+  _id: ID
+  updateAt: Int
+  createAt: Int
+  type: String
+}
+
+type Schedule {
+  day: Day
+  startTime: Int
+  endTime: Int
+  repeat: Boolean
+}
+
+type LessonSchedule implements Record {
+  _id: ID
+  updateAt: Int
+  createAt: Int
+  type: String
+
+  name: String
+  repeat: Boolean
+  teachers: [Teacher]
+  students: [Student]
+  schedule: Schedule
+}
+
+type TeacherSchedule implements Record {
+  _id: ID
+  updateAt: Int
+  createAt: Int
+  type: String
+
+  teacher: Teacher
+  startTime: Int
+  endTime: Int
+}
+
+type Lesson implements Record {
+  _id: ID
+  updateAt: Int
+  createAt: Int
+  type: String
+
+  name: String
+  location: Location
+  teachers: [Teacher]
+  students: [Student]
+  schedule: [Schedule]
+}
+
+type Teacher implements Record {
+  _id: ID
+  updateAt: Int
+  createAt: Int
+  type: String
+
+  name: String
+}
+
+type Student implements Record {
+  _id: ID
+  updateAt: Int
+  createAt: Int
+  type: String
+
+  name: String
+}
+
+type Location implements Record {
+  _id: ID
+  updateAt: Int
+  createAt: Int
+  type: String
+
+  name: String
+  address: String
+}
+
+
+type TeacherQuery {
+  list: [Teacher]
+  findById(id:ID): Teacher
+}
+
+type LocationQuery {
+  list: [Location]
+  findById(id:ID): Location
+}
+
+type StudentQuery {
+  list: [Student]
+  findById(id:ID): Student
+}
+
+type TeacherMutation {
+  create(name:String): Teacher
+  update(id:ID, name: String) : Teacher
+}
+
+type StudentMutation {
+  create(name:String): Student
+  update(id:ID, name: String) : Student
+}
+
+type LocationMutation {
+  create(name:String, address:String): Location
+  update(id:ID, name: String, address:String) : Location
+}
+
+
+
+
+
+
+
+
+
+
+type User {
+  id: ID
+  username: String
+  password: String
+}
 
 type Count {
   amount: Int!
@@ -6,10 +140,20 @@ type Count {
 type Query {
   # Counter
   count: Count
+  viewer: User
+
+  teacher: TeacherQuery
+  student: StudentQuery
+  location: LocationQuery
 }
 
 type Mutation {
+  login(token: String): String
+  loginLocal(username: String, password:String): User
   addCount( amount: Int! ): Count
+  teacher: TeacherMutation
+  student: StudentMutation
+  location: LocationMutation
 }
 
 type Subscription {
