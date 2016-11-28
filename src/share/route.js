@@ -5,6 +5,7 @@ import Counter from 'share/components/counter'
 import App from 'share/components/app'
 
 import Admin from "./admin/route"
+import TeaTalkAdmin from "./teatalkAdmin/route"
 
 export default (
 [
@@ -12,6 +13,7 @@ export default (
     <IndexRedirect to="/counter" />
     <Route path="counter" component={Counter} />
   </Route>,
-  ...Admin
+  ...Admin,
+  ...TeaTalkAdmin,
 ]
 );

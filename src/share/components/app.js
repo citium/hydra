@@ -2,6 +2,8 @@ import React from "react"
 import { Navbar, Nav, MenuItem, NavDropdown } from "react-bootstrap"
 import go from "share/go"
 
+import { BASE as teaTalkAdminBase } from "../teatalkAdmin/config"
+
 class App extends React.Component {
   static propTypes = {
     children: React.PropTypes.element
@@ -18,6 +20,7 @@ class App extends React.Component {
         <Nav>
           <NavDropdown eventKey={3} title="Admin" id="basic-nav-dropdown">
             <MenuItem onClick={go("/admin")} eventKey={3.0}>Admin</MenuItem>
+            <MenuItem onClick={go(teaTalkAdminBase)} eventKey={3.0}>TeaTalk Admin</MenuItem>
             <MenuItem divider />
             <MenuItem onClick={go("/admin/author")} eventKey={3.1}>Author</MenuItem>
             <MenuItem onClick={go("/admin/book")} eventKey={3.2}>Book</MenuItem>
